@@ -1,0 +1,32 @@
+.body{
+    height: 100vh;
+}
+h1{
+    color: gold;
+    font-family: 'Tahoma'
+}
+
+.App{
+    text-align: center;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100vh;
+    background-color: cornflowerblue;
+}
+
+.video-feed{
+    border-style: solid;
+    border-radius: 5px;
+    border-color: gold;
+}
+
+.face-alert{
+    font-size: 20px;
+    font-weight: bolder;
+    color: red;
+    margin: 10px;
+    height: 20px;
+    width: 200px;
+}
