@@ -1,13 +1,13 @@
 "use client"; // Ensure this is a client-side component
-import Image from 'next/image';
+//import Image from 'next/image';
 import React, { useState } from 'react';
-import Link from 'next/link';
+//import Link from 'next/link';
 import axios from 'axios';
 
 import { useRouter } from 'next/navigation';
 
-import logo from '../app/img/indian.jpg'
-import flag from '../app/img/logo.png'
+//import logo from '../app/img/indian.jpg'
+//import flag from '../app/img/logo.png'
 
 export const Login: React.FC = () => {
   const [voterId, setVoterId] = useState('');
