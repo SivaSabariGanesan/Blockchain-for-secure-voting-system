@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ContainerScroll } from "../../components/container-scroll-animation";
 import { ExpandableCardDemo } from "../../components/ExpandableDemoCard";
 import { useRouter } from 'next/navigation';
+import VideoFeed from "../VideoFeed/page";
 
 export default function HeroScrollDemo() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function HeroScrollDemo() {
 
   return (
     <div className="flex flex-col overflow-hidden">
+    <VideoFeed />
       <ContainerScroll
         titleComponent={
           <>
