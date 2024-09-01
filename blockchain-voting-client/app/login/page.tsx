@@ -1,115 +1,148 @@
-"use client"; // Ensure this is a client-side component
-//import Image from 'next/image';
-import React, { useState } from 'react';
-//import Link from 'next/link';
+"use client";
+import React, { useState } from "react";
+import Image from "next/image";
 import axios from 'axios';
+import { ContainerScroll } from "../../components/container-scroll-animation";
+import { ExpandableCardDemo } from "../../components/ExpandableDemoCard";
 
-import { useRouter } from 'next/navigation';
-
-//import logo from '../app/img/indian.jpg'
-//import flag from '../app/img/logo.png'
-
-export const Login: React.FC = () => {
-  const [voterId, setVoterId] = useState('');
+export default function HeroScrollDemo() {
+  const [step, setStep] = useState(1);
+  const [username, setUsername] = useState('');
   const [nftToken, setNftToken] = useState('');
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [originalOtp, setOriginalOtp] = useState('');
   const [error, setError] = useState('');
 
-  const router = useRouter();
-
-  // const navigateToDashboard = () => {
-  //   router.push('/dashboard');
-  // };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(''); // Clear any previous error
-
+  const handleSendOtp = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/login", {
-        voterId,
-        nftToken,
+      const response = await axios.post('http://localhost:5001/api/send_otp', {
+        username,
+        nft_token: nftToken,
         email,
       });
-      
-
-      if (response.data.success) {
-        // Navigate to the dashboard if the login is successful
-        router.push("/dashboard");
-      } else {
-        setError(response.data.message || "Invalid credentials. Please try again.");
+      if (response.status === 200) {
+        setOtp(response.data.otp);
+        setOriginalOtp(response.data.otp);
+        setStep(2);
       }
-    } catch (err) {
-      setError("An error occurred while processing your request. Please try again later.");
+    } catch (error) {
+      setError('Invalid Username or NFT Token');
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      const response = await axios.post('http://localhost:5001/api/verify_otp', {
+        otp,
+        original_otp: originalOtp,
+        username,
+      });
+      if (response.status === 200) {
+        window.location.href = '/dashboard';
+      }
+    } catch (error) {
+      setError('Invalid OTP');
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-hero bg-cover">
-      {/* Left side with the image */}
-      <div className="hidden md:block w-1/2 relative"></div>
-
-      {/* Right side with the login form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 drop-shadow-2xl">
-        <div className="w-full max-w-md p-9 space-y-20 bg-white rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-2xl duration-300 ease-in-out bg-gradient-to-r from-cyan-500 to-blue-500 border-solid border-2 border-sky-500">
-          <h1 className="text-4xl font-bold text-center text-gray-800">Sign In</h1>
-
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="voterId" className="block text-sm font-medium text-white-700">Voter Id</label>
-              <input
-                type="text"
-                id="voterId"
-                name="voterId"
-                value={voterId}
-                onChange={(e) => setVoterId(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-transform duration-300 ease-in-out transform hover:scale-105"
-                placeholder="eg.WEYGTTEFGGT"
-              />
-            </div>
-            <div>
-              <label htmlFor="nftToken" className="block text-sm font-medium text-white-700">NFT TOKEN</label>
-              <input
-                type="text"
-                id="nftToken"
-                name="nftToken"
-                value={nftToken}
-                onChange={(e) => setNftToken(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-transform duration-300 ease-in-out transform hover:scale-105"
-                placeholder="eg.0xdc3752e18aA8dE0691184BB86Cb6F84AA2601bbC"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white-700">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-transform duration-300 ease-in-out transform hover:scale-105"
-                placeholder="eg.example@gmail.com"
-              />
-            </div>
-            {error && <p className="text-red-500 text-center">{error}</p>}
-            
-            <button 
-              type="submit"
-              className="w-full py-2 px-4 border-2 my-8 border-blue-600 bg-blue-600 text-white font-semibold space-y-15 rounded-full shadow-lg transform transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-blue-700 hover:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Sign In
-            </button>
-            
-          </form>
-
-          <p className="text-center text-sm text-gray-600"></p>
-        </div>
-      </div>
+    <div className="flex flex-col overflow-hidden">
+      <ContainerScroll
+        titleComponent={
+          <>
+            <Image
+              className="rounded-full float-left border-solid border-2 border-black"
+              src="/images/flag.png"
+              alt="Description of the image"
+              width={200}
+              height={100}
+            />
+            <h1 className="text-4xl font-semibold text-black dark:text-white">
+              Let's vote for Future India!<br />
+              <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
+                <span className="text-orange-500">Indian</span> <span>Voting</span> <span className="text-green-500">System</span>
+              </span>
+            </h1>
+          </>
+        }
+      >
+        {step === 1 ? (
+          <div className="bg-blue-500 p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Sign In</h2>
+            <form onSubmit={(e) => { e.preventDefault(); handleSendOtp(); }}>
+              <div className="mb-4">
+                <label htmlFor="username" className="block text-sm font-medium text-white">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="mt-1 block w-full text-black border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="nftToken" className="block text-sm font-medium text-white">NFT Token</label>
+                <input
+                  type="text"
+                  id="nftToken"
+                  value={nftToken}
+                  onChange={(e) => setNftToken(e.target.value)}
+                  className="mt-1 block w-full text-black border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full text-black border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              {error && <p className="text-red-500">{error}</p>}
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-md"
+              >
+                Send OTP
+              </button>
+            </form>
+          </div>
+        ) : (
+          <div className="bg-blue-500 p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Verify OTP</h2>
+            <form onSubmit={(e) => { e.preventDefault(); handleVerifyOtp(); }}>
+              <div className="mb-4">
+                <label htmlFor="otp" className="block text-sm font-medium text-white">OTP</label>
+                <input
+                  type="text"
+                  id="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="mt-1 block w-full text-black border-gray-300 rounded-md shadow-sm"
+                  required
+                />
+              </div>
+              {error && <p className="text-red-500">{error}</p>}
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-md"
+              >
+                Verify OTP
+              </button>
+            </form>
+          </div>
+        )}
+        <ExpandableCardDemo />
+        <button className="mt-4 py-2 px-4 bg-green-600 text-white rounded-md">
+          Result
+        </button>
+      </ContainerScroll>
     </div>
   );
-};
-
-export default Login;
+}

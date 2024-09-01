@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -7,7 +9,7 @@ const Logout: React.FC = () => {
   useEffect(() => {
     localStorage.removeItem("auth");
     setTimeout(() => {
-      router.push("/");
+      router.push("/login");
     }, 3000);
   }, [router]);
 

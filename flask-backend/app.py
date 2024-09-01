@@ -1,9 +1,7 @@
 import smtplib
 import random
 from email.message import EmailMessage
-from flask import Flask, request, jsonify, Response
-from flask_socketio import SocketIO
-import cv2
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
